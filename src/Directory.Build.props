@@ -19,7 +19,25 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/pondhawktech/pondhawk-context</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Symbols and source debugging">
+    <!--
+      SourceLink is built into the .NET 8+ SDK for GitHub-hosted repositories, so no
+      package reference is needed: these properties are all it takes for consumers to
+      step into the library and get stack traces that map to real source.
+    -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!--
+      Normalizes paths embedded in the PDB. Only set in CI: enabling it locally makes
+      the debugger look for sources at normalized paths that do not exist on disk.
+    -->
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup>

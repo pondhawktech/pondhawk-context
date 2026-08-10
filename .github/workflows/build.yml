@@ -63,5 +63,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: nuget-packages
-          path: artifacts/*.nupkg
+          # Symbol packages travel with the artifact so publish.yml can promote them
+          # to nuget.org. *.nupkg does not match *.snupkg, so both are listed.
+          path: |
+            artifacts/*.nupkg
+            artifacts/*.snupkg
           retention-days: 30
