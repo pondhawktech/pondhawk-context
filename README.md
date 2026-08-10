@@ -1,8 +1,22 @@
-# Pondhawk.Context
+<p align="center">
+  <img src="pht-small-logo.png" alt="Pondhawk.Context" width="120" />
+</p>
 
-Strongly typed, async-flowing ambient application context for .NET, implemented with a
-Roslyn incremental source generator. No dependency injection, no runtime reflection, no
-proxies — and fully compatible with trimming and Native AOT.
+<h1 align="center">Pondhawk.Context</h1>
+
+<p align="center">
+  Strongly typed, async-flowing ambient application context for .NET — compile-time generated, with no dependency injection, no runtime reflection, and no proxies.
+</p>
+
+<p align="center">
+  <a href="https://github.com/pondhawktech/pondhawk-context/actions/workflows/build.yml"><img src="https://github.com/pondhawktech/pondhawk-context/actions/workflows/build.yml/badge.svg" alt="Build" /></a>
+  <img src="https://img.shields.io/badge/.NET-8.0%20%7C%2010.0-512bd4" alt=".NET 8 and .NET 10" />
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" />
+  <a href="https://www.nuget.org/packages/Pondhawk.Context"><img src="https://img.shields.io/nuget/v/Pondhawk.Context?label=NuGet" alt="Pondhawk.Context on NuGet" /></a>
+</p>
+
+Implemented with a Roslyn incremental source generator, and fully compatible with
+trimming and Native AOT.
 
 ```csharp
 [AmbientContext]
