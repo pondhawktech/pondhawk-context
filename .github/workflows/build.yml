@@ -1,0 +1,67 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Build and Test
+        run: dotnet run --project build/Build.csproj -- --target=Test --build-number=${{ github.run_number }}
+
+      # The trim and AOT analyzers gate every build for free. This job is the part that
+      # proves the generated code still works after the trimmer has run, so it is worth
+      # the extra minutes — but only on main, before anything is packed.
+      - name: Verify Native AOT
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # The hosted images normally ship both already; only pay for apt when they don't.
+          missing=""
+          command -v clang >/dev/null 2>&1 || missing="$missing clang"
+          dpkg -s zlib1g-dev >/dev/null 2>&1 || missing="$missing zlib1g-dev"
+          if [ -n "$missing" ]; then
+            echo "Installing native toolchain prerequisites:$missing"
+            sudo apt-get update
+            sudo apt-get install -y $missing
+          else
+            echo "Native toolchain prerequisites already present."
+          fi
+          dotnet run --project build/Build.csproj -- --target=AotVerify --exclusive
+
+      - name: Pack
+        if: github.ref == 'refs/heads/main'
+        run: dotnet run --project build/Build.csproj -- --target=Pack --exclusive --build-number=${{ github.run_number }}
+
+      - name: Push
+        if: github.ref == 'refs/heads/main'
+        run: dotnet run --project build/Build.csproj -- --target=Push --exclusive
+        env:
+          NUGET_SOURCE: https://nuget.pkg.github.com/pondhawktech/index.json
+          NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifacts
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/*.nupkg
+          retention-days: 30

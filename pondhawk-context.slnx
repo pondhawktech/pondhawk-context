@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Pondhawk.Context/Pondhawk.Context.csproj" />
+    <Project Path="src/Pondhawk.Context.Generator/Pondhawk.Context.Generator.csproj" />
+  </Folder>
+  <Folder Name="/build/">
+    <Project Path="build/Build.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/Pondhawk.Context.Tests/Pondhawk.Context.Tests.csproj" />
+    <Project Path="test/Pondhawk.Context.Generator.Tests/Pondhawk.Context.Generator.Tests.csproj" />
+    <Project Path="test/Pondhawk.Context.AotTests/Pondhawk.Context.AotTests.csproj" />
+  </Folder>
+</Solution>

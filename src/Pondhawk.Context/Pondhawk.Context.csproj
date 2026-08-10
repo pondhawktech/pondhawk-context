@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <Title>Pondhawk.Context</Title>
+    <Description>Strongly typed, async-flowing ambient application context. Compile-time generated, Native AOT and trimming friendly, with no dependency injection and no runtime reflection.</Description>
+    <PackageTags>ambient-context;source-generator;activity;aot;trimming;async-local</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Label="AOT and trimming">
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsTrimmable>true</IsTrimmable>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <EnableAotAnalyzer>true</EnableAotAnalyzer>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\pht-small-logo.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!--
+    The generator is NOT packed as its own package. It is built first, then injected
+    into this package as an analyzer asset so consumers get it automatically from a
+    single PackageReference and it never becomes a runtime dependency.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\Pondhawk.Context.Generator\Pondhawk.Context.Generator.csproj"
+                      PrivateAssets="all"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <Target Name="IncludeGeneratorInPackage" BeforeTargets="_GetPackageFiles">
+    <ItemGroup>
+      <None Include="..\Pondhawk.Context.Generator\bin\$(Configuration)\netstandard2.0\Pondhawk.Context.Generator.dll"
+            Pack="true"
+            PackagePath="analyzers/dotnet/cs"
+            Visible="false" />
+    </ItemGroup>
+  </Target>
+
+</Project>
