@@ -53,6 +53,32 @@ public partial interface IAuditContext
 }
 ```
 
+## The operation context
+
+One context ships with the package: `IOperationContext`, for what every library may want to
+know about the current unit of work.
+
+```csharp
+var operation = Ambient<IOperationContext>.Current;
+
+operation.CorrelationId   // which unit of work
+operation.SubjectId       // who it is for, by an id that never changes
+operation.SubjectName     // who it is for, as a person would know them
+operation.Tenant          // which tenant, when there are tenants
+```
+
+Request middleware sets it — Pondhawk.Logging's does — and log sinks and audit journals read
+it. When nobody is signed in the subject is `Operation.Anonymous`.
+
+For work outside a request, begin a unit of work yourself:
+
+```csharp
+using var operation = Operation.Begin();   // fresh correlation id; subject Operation.System
+```
+
+Its values are custom properties of the activity like any other ambient value, so none of
+them is sent to another service.
+
 ## Important: you need an Activity
 
 The default provider stores values on `Activity.Current`. **If there is no current

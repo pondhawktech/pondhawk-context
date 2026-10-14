@@ -163,6 +163,53 @@ snapshots. This keeps both decisions intact.
 
 ---
 
+## The operation context (1.1)
+
+### One context the package ships: `IOperationContext`
+
+Every other ambient context is declared by the application that needs it. This one is
+declared here, because what it holds — the unit of work's correlation id, who it is for
+(`SubjectId`, `SubjectName`) and its tenant — is read by libraries that know nothing of
+each other: a log sink stamps it on every event, an audit journal records it on every
+change. One declaration means they read the same values, written once.
+
+It replaces `CorrelationManager` in Pondhawk.Logging, which kept the same values on the
+same `Activity` under keys of its own. Pondhawk.Logging takes a dependency on this package
+instead. The library is built with its own generator applied, so the shipped context is
+implemented exactly as a consumer's would be.
+
+### Subject as an identifier and a name
+
+`SubjectId` is what never changes — a user's subject identifier, or a client's id — so a
+trail can always say who acted after a rename. `SubjectName` is what a person reads in a log.
+A log sink shows the name; an audit journal records both. Nothing else about the person —
+email, full name — is carried: these values are stamped on every log event, and that would
+put personal data into every log store.
+
+### Nobody in particular has two names
+
+`Operation.System` is the subject of the application's own work, with no caller: a scheduled
+job, a queue consumer. `Operation.Anonymous` is the subject of a caller who has not shown who
+they are: a sign-in attempt. They are kept apart because they are different facts — a
+pruned token was done by nobody, a failed sign-in by somebody unknown — and an auditor reading
+"anonymous" for the first would look for a visitor who never existed.
+
+### The correlation id is not baggage either
+
+`CorrelationManager` kept the correlation id in baggage, so it travelled on every outbound
+HTTP call, to third parties included. Nothing used it there. It is now an ordinary ambient
+value, for the reasons baggage was rejected above. A correlation id meant for another of our
+own services is sent on purpose, in a header.
+
+### `Operation.Begin` for work outside a request
+
+Background work has no request to start an activity for it, and without one every ambient
+write is dropped. `Operation.Begin` starts one, gives it a fresh correlation id and makes the
+system its subject. The id is a `Guid` in 32 hexadecimal digits: the package has no other
+dependency, and the id only has to be unique and safe to carry in a header.
+
+---
+
 ## Still open
 
 - Whether dropped writes (no current activity) should be observable via `EventSource`.

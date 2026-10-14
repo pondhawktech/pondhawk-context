@@ -48,3 +48,16 @@ public partial interface IInheritingContext : IUserIdentity
 {
     string? UserDescription { get; set; }
 }
+
+/// <summary>
+/// An application's read-only view over the operation context the package ships. Proves that
+/// a library reading <see cref="IOperationContext"/> and an application reading its own
+/// interface see the same values.
+/// </summary>
+[AmbientContext]
+public partial interface IOperationView
+{
+    string? CorrelationId { get; }
+
+    string? SubjectId { get; }
+}

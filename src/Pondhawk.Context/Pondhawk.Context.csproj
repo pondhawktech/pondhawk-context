@@ -25,9 +25,12 @@
     single PackageReference and it never becomes a runtime dependency.
   -->
   <ItemGroup>
+    <!-- Also run as this library's own generator: the one context the package ships,
+         IOperationContext, is implemented by it like any consumer's. -->
     <ProjectReference Include="..\Pondhawk.Context.Generator\Pondhawk.Context.Generator.csproj"
                       PrivateAssets="all"
-                      ReferenceOutputAssembly="false" />
+                      ReferenceOutputAssembly="false"
+                      OutputItemType="Analyzer" />
   </ItemGroup>
 
   <Target Name="IncludeGeneratorInPackage" BeforeTargets="_GetPackageFiles">
