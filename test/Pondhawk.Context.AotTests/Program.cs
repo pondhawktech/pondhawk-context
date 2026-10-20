@@ -20,27 +20,27 @@ Check("no activity: read returns default", Ambient<IUserContext>.Current.UserUid
 
 using (var root = new Activity("root").Start())
 {
-    Ambient<IUserContext>.Current.UserUid = "jmoring";
+    Ambient<IUserContext>.Current.UserUid = "alice";
     Ambient<IUserContext>.Current.RequestCount = 7;
     Ambient<ITenantContext>.Current.Tenant = "acme";
 
-    Check("set/get round trip", Ambient<IUserContext>.Current.UserUid == "jmoring");
+    Check("set/get round trip", Ambient<IUserContext>.Current.UserUid == "alice");
     Check("value type round trip", Ambient<IUserContext>.Current.RequestCount == 7);
     Check("singleton identity", ReferenceEquals(Ambient<IUserContext>.Current, Ambient<IUserContext>.Current));
-    Check("read-only view shares keys", Ambient<IAuditContext>.Current.UserUid == "jmoring");
+    Check("read-only view shares keys", Ambient<IAuditContext>.Current.UserUid == "alice");
 
     using (var child = new Activity("child").Start())
     {
-        Check("child reads ancestor value", Ambient<IUserContext>.Current.UserUid == "jmoring");
+        Check("child reads ancestor value", Ambient<IUserContext>.Current.UserUid == "alice");
 
         Ambient<IUserContext>.Current.UserUid = "shadowed";
         Check("child write shadows ancestor", Ambient<IUserContext>.Current.UserUid == "shadowed");
     }
 
-    Check("ancestor value survives child scope", Ambient<IUserContext>.Current.UserUid == "jmoring");
+    Check("ancestor value survives child scope", Ambient<IUserContext>.Current.UserUid == "alice");
 
     await Task.Yield();
-    Check("value flows across await", Ambient<IUserContext>.Current.UserUid == "jmoring");
+    Check("value flows across await", Ambient<IUserContext>.Current.UserUid == "alice");
 }
 
 Console.WriteLine();

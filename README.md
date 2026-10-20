@@ -25,7 +25,7 @@ public partial interface IUserContext
     string? UserUid { get; set; }
 }
 
-Ambient<IUserContext>.Current.UserUid = "jmoring";
+Ambient<IUserContext>.Current.UserUid = "alice";
 ```
 
 For usage, see the [package README](src/Pondhawk.Context/README.md). For the design

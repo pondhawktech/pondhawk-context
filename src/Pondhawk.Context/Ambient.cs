@@ -10,7 +10,7 @@ namespace Pondhawk.Context;
 /// </typeparam>
 /// <example>
 /// <code>
-/// Ambient&lt;IUserContext&gt;.Current.UserUid = "jmoring";
+/// Ambient&lt;IUserContext&gt;.Current.UserUid = "alice";
 /// var uid = Ambient&lt;IUserContext&gt;.Current.UserUid;
 /// </code>
 /// </example>

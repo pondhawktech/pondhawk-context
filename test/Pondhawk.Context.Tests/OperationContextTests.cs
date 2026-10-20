@@ -63,14 +63,14 @@ public sealed class OperationContextTests
 
         context.CorrelationId = "request-1";
         context.SubjectId = "01USER";
-        context.SubjectName = "jmoring";
+        context.SubjectName = "alice";
         context.Tenant = "acme";
 
         // A child activity, as EF Core or HttpClient would start one.
         using var child = new Activity("query").Start();
 
         context.SubjectId.ShouldBe("01USER");
-        context.SubjectName.ShouldBe("jmoring");
+        context.SubjectName.ShouldBe("alice");
         context.Tenant.ShouldBe("acme");
         context.CorrelationId.ShouldBe("request-1");
     }
@@ -86,8 +86,8 @@ public sealed class OperationContextTests
 
         using (new Activity("sign-in").Start())
         {
-            context.SubjectName = "jmoring";
-            context.SubjectName.ShouldBe("jmoring");
+            context.SubjectName = "alice";
+            context.SubjectName.ShouldBe("alice");
         }
 
         context.SubjectName.ShouldBe(Operation.Anonymous);
@@ -107,7 +107,7 @@ public sealed class OperationContextTests
     {
         using var operation = Operation.Begin("private-1");
 
-        Ambient<IOperationContext>.Current.SubjectName = "jmoring";
+        Ambient<IOperationContext>.Current.SubjectName = "alice";
 
         operation.Baggage.ShouldBeEmpty("nothing ambient is sent on an outbound call");
     }

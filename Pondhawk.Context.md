@@ -259,7 +259,7 @@ Example:
 ```csharp
 var user = Ambient<IUserContext>.Current;
 
-user.UserUid = "jmoring";
+user.UserUid = "alice";
 user.UserDescription = "James Moring";
 ```
 
@@ -611,7 +611,7 @@ UserDescription
 Therefore:
 
 ```csharp
-Ambient<IUserContext>.Current.UserUid = "jmoring";
+Ambient<IUserContext>.Current.UserUid = "alice";
 ```
 
 can later be read through:

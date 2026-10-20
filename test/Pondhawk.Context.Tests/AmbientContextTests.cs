@@ -10,9 +10,9 @@ public sealed class AmbientContextTests
     {
         using var scope = new Activity("root").Start();
 
-        Ambient<IUserContext>.Current.UserUid = "jmoring";
+        Ambient<IUserContext>.Current.UserUid = "alice";
 
-        Ambient<IUserContext>.Current.UserUid.ShouldBe("jmoring");
+        Ambient<IUserContext>.Current.UserUid.ShouldBe("alice");
     }
 
     [Fact]
@@ -26,10 +26,10 @@ public sealed class AmbientContextTests
     {
         using var scope = new Activity("root").Start();
 
-        Ambient<IUserContext>.Current.UserUid = "jmoring";
+        Ambient<IUserContext>.Current.UserUid = "alice";
         Ambient<ITenantContext>.Current.Tenant = "acme";
 
-        Ambient<IAuditContext>.Current.UserUid.ShouldBe("jmoring");
+        Ambient<IAuditContext>.Current.UserUid.ShouldBe("alice");
         Ambient<IAuditContext>.Current.Tenant.ShouldBe("acme");
     }
 
@@ -38,9 +38,9 @@ public sealed class AmbientContextTests
     {
         using var scope = new Activity("root").Start();
 
-        Ambient<IUserContext>.Current.UserUid = "jmoring";
+        Ambient<IUserContext>.Current.UserUid = "alice";
 
-        Ambient<IInheritingContext>.Current.UserUid.ShouldBe("jmoring");
+        Ambient<IInheritingContext>.Current.UserUid.ShouldBe("alice");
     }
 
     [Fact]
@@ -88,11 +88,11 @@ public sealed class AmbientContextTests
     public async Task Values_FlowAcrossAwait()
     {
         using var scope = new Activity("root").Start();
-        Ambient<IUserContext>.Current.UserUid = "jmoring";
+        Ambient<IUserContext>.Current.UserUid = "alice";
 
         await Task.Yield();
 
-        Ambient<IUserContext>.Current.UserUid.ShouldBe("jmoring");
+        Ambient<IUserContext>.Current.UserUid.ShouldBe("alice");
     }
 
     [Fact]

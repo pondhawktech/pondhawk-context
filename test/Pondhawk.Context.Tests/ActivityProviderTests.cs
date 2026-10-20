@@ -13,19 +13,19 @@ public sealed class ActivityProviderTests
     public void ChildActivity_ReadsAncestorValue()
     {
         using var root = new Activity("root").Start();
-        Ambient<IUserContext>.Current.UserUid = "jmoring";
+        Ambient<IUserContext>.Current.UserUid = "alice";
 
         using var child = new Activity("child").Start();
 
         // Without the parent walk this is null, and every EF Core interceptor breaks.
-        Ambient<IUserContext>.Current.UserUid.ShouldBe("jmoring");
+        Ambient<IUserContext>.Current.UserUid.ShouldBe("alice");
     }
 
     [Fact]
     public void ChildActivity_WriteShadowsAncestorAndDoesNotMutateIt()
     {
         using var root = new Activity("root").Start();
-        Ambient<IUserContext>.Current.UserUid = "jmoring";
+        Ambient<IUserContext>.Current.UserUid = "alice";
 
         using (var child = new Activity("child").Start())
         {
@@ -33,14 +33,14 @@ public sealed class ActivityProviderTests
             Ambient<IUserContext>.Current.UserUid.ShouldBe("shadowed");
         }
 
-        Ambient<IUserContext>.Current.UserUid.ShouldBe("jmoring");
+        Ambient<IUserContext>.Current.UserUid.ShouldBe("alice");
     }
 
     [Fact]
     public void Remove_InChild_HidesAncestorWithoutMutatingIt()
     {
         using var root = new Activity("root").Start();
-        Ambient<IUserContext>.Current.UserUid = "jmoring";
+        Ambient<IUserContext>.Current.UserUid = "alice";
 
         using (var child = new Activity("child").Start())
         {
@@ -49,14 +49,14 @@ public sealed class ActivityProviderTests
             Ambient<IUserContext>.Current.UserUid.ShouldBeNull();
         }
 
-        Ambient<IUserContext>.Current.UserUid.ShouldBe("jmoring");
+        Ambient<IUserContext>.Current.UserUid.ShouldBe("alice");
     }
 
     [Fact]
     public void SettingNull_ShadowsRatherThanRevealingAncestor()
     {
         using var root = new Activity("root").Start();
-        Ambient<IUserContext>.Current.UserUid = "jmoring";
+        Ambient<IUserContext>.Current.UserUid = "alice";
 
         using var child = new Activity("child").Start();
         Ambient<IUserContext>.Current.UserUid = null;
