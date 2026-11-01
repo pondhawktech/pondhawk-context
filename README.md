@@ -51,7 +51,7 @@ The generator is not published as its own package. It is built first and injecte
 
 ```bash
 dotnet run --project build/Build.csproj -- --target=Test
-dotnet run --project build/Build.csproj -- --target=Pack --build-number=123
+dotnet run --project build/Build.csproj -- --target=Pack
 dotnet run --project build/Build.csproj -- --target=AotVerify     # needs clang + zlib1g-dev
 ```
 
@@ -60,16 +60,19 @@ alone so pull requests stay fast.
 
 ## Versioning
 
-`src/Pondhawk.Context/version.json` holds the major and minor version. The patch comes
-from the CI build number, so nothing needs bumping by hand between releases:
+`<VersionPrefix>` in `src/Directory.Build.props` holds the last released version.
 
 ```text
-version.json 1.0  +  run number 42   ->  1.0.42
-version.json 1.0  +  local build     ->  1.0.0-local
+Released version        1.1.8
+Push to main            1.1.9-ci.42    (GitHub Packages only)
+Local Pack              1.1.8-local
+Release, bump: patch    1.1.9
 ```
 
-`build.yml` publishes to GitHub Packages on every push to `main`. `publish.yml` is a
-manual workflow that promotes an existing build's artifacts to nuget.org.
+`publish.yml` is a manual workflow. Choose `bump` (`none`, `patch`, `minor` or `major`). It bumps the
+version, then builds, tests, and packs. It pushes to nuget.org and GitHub Packages, commits the bump,
+and creates the tag and GitHub release. `dry_run` stops before it publishes, and can run on any branch.
+A push to nuget.org is permanent: a version can be unlisted but never replaced.
 
 ## Requirements
 
