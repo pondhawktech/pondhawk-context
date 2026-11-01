@@ -138,8 +138,8 @@ from anyone else's.
 | Roslyn pin | **4.8.0**, which sets the .NET 8 SDK as the floor for consuming builds |
 | Package shape | One package; generator injected under `analyzers/dotnet/cs` |
 | Build | Cake Frosting, matching `pondhawk-rules` |
-| Versioning | `version.json` holds `Major.Minor` (1.0); patch is the CI build number |
-| CI / feed | GitHub Actions → GitHub Packages; `publish.yml` promotes to nuget.org manually |
+| Versioning | `VersionPrefix` holds the last released version; `publish.yml` bumps it. CI builds are `-ci.N` prereleases |
+| CI / feed | GitHub Actions → GitHub Packages; `publish.yml` releases to nuget.org manually |
 | AOT | `IsAotCompatible` on every build; publish-and-run verification on `main` |
 | Tests | xUnit v3 + Shouldly + coverlet; Verify snapshots for generator output |
 
