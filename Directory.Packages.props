@@ -6,6 +6,7 @@
 
   <ItemGroup Label="Build">
     <PackageVersion Include="Cake.Frosting" Version="6.3.0" />
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.15" />
     <PackageVersion Include="Meziantou.Analyzer" Version="3.0.342" />
   </ItemGroup>
 
